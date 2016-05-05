@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.amal.whatsclean.Utils;
+package com.amal.whatsapp.Utils;
 
-import com.amal.whatsclean.Models.StorageSize;
+import com.amal.whatsapp.Models.StorageSize;
 
 
 // TODO: Auto-generated Javadoc

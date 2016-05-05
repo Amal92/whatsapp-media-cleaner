@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingBottom="5dp"
     android:paddingEnd="10dp"
     android:paddingLeft="13dp"
@@ -10,33 +10,45 @@
     android:paddingTop="5dp">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/header_title"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:text="Today"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/btn_expand_toggle"
+                android:layout_width="15dp"
+                android:layout_height="24dp"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/up_arrows" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/header_checkbox"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:text="Today"
-            android:textColor="#525252"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/btn_expand_toggle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="start|center_vertical"
-            android:src="@drawable/up_arrows" />
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/header_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#e0e0e0"
+        />
 </LinearLayout>

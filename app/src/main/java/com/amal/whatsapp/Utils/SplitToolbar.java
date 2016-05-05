@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Utils;
+package com.amal.whatsapp.Utils;
 
 import android.content.Context;
 import android.support.v7.widget.ActionMenuView;

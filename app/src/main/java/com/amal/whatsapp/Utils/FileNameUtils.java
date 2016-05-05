@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Utils;
+package com.amal.whatsapp.Utils;
 
 import android.net.Uri;
 

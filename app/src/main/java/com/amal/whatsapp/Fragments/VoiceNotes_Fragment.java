@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Fragments;
+package com.amal.whatsapp.Fragments;
 
 
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.amal.whatsclean.R;
+import com.amal.whatsapp.R;
 
 /**
  * A simple {@link Fragment} subclass.

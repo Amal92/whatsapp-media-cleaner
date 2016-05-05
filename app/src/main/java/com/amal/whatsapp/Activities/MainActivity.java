@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Activities;
+package com.amal.whatsapp.Activities;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,17 +9,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amal.whatsclean.Models.StorageSize;
-import com.amal.whatsclean.R;
-import com.amal.whatsclean.Utils.Constants;
-import com.amal.whatsclean.Utils.FileNameUtils;
-import com.amal.whatsclean.Utils.StorageUtil;
+import com.amal.whatsapp.Applications.Whatyclean;
+import com.amal.whatsapp.Models.StorageSize;
+import com.amal.whatsapp.R;
+import com.amal.whatsapp.Utils.Constants;
+import com.amal.whatsapp.Utils.FileNameUtils;
+import com.amal.whatsapp.Utils.StorageUtil;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Mint.initAndStartSession(MainActivity.this, "7b5724a6");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         try {
@@ -60,14 +62,22 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Whatyclean.imagesFilesReceived = imagesFilesReceived;
+                Whatyclean.imagesFilesSent = imagesFilesSent;
+                Whatyclean.videoFilesReceived = videoFilesReceived;
+                Whatyclean.videoFilesSent = videoFilesSent;
+                Whatyclean.audioFilesReceived = audioFilesReceived;
+                Whatyclean.audioFilesSent = audioFilesSent;
+                Whatyclean.voiceFiles = voiceFiles;
                 Intent intent = new Intent(MainActivity.this,Navigation_Activity.class);
-                intent.putExtra(Constants.IMAGE_FILES_RECEIVED,imagesFilesReceived);
+               /* intent.putExtra(Constants.IMAGE_FILES_RECEIVED,imagesFilesReceived);
                 intent.putExtra(Constants.IMAGE_FILES_SENT,imagesFilesSent);
                 intent.putExtra(Constants.VIDEO_FILES_RECEIVED,videoFilesReceived);
                 intent.putExtra(Constants.VIDEO_FILES_SENT,videoFilesSent);
                 intent.putExtra(Constants.AUDIO_FILES_RECEIVED,audioFilesReceived);
                 intent.putExtra(Constants.AUDIO_FILES_SENT,audioFilesSent);
-                intent.putExtra(Constants.VOICE_FILES_RECEIVED,voiceFiles);
+                intent.putExtra(Constants.VOICE_FILES_RECEIVED,voiceFiles);*/
+
                 startActivity(intent);
             }
         });

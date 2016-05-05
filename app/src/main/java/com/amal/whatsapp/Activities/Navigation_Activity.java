@@ -1,18 +1,22 @@
-package com.amal.whatsclean.Fragments;
-
+package com.amal.whatsapp.Activities;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.amal.whatsclean.Activities.Navigation_Activity;
-import com.amal.whatsclean.Pojo.Media_File;
-import com.amal.whatsclean.Pojo.Sorted_Media_Files;
-import com.amal.whatsclean.R;
-import com.amal.whatsclean.Utils.Constants;
+import com.amal.whatsapp.Applications.Whatyclean;
+import com.amal.whatsapp.Fragments.AudioFiles_Fragment;
+import com.amal.whatsapp.Fragments.ImageFiles_Fragment;
+import com.amal.whatsapp.Fragments.VideoFiles_Fragment;
+import com.amal.whatsapp.Fragments.VoiceNotes_Fragment;
+import com.amal.whatsapp.Pojo.Media_File;
+import com.amal.whatsapp.Pojo.Sorted_Media_Files;
+import com.amal.whatsapp.R;
+import com.amal.whatsapp.Utils.Constants;
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
 import org.joda.time.DateTime;
 
@@ -22,30 +26,115 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ImageFiles_Fragment extends Fragment {
+public class Navigation_Activity extends AppCompatActivity {
 
-    private ArrayList<Sorted_Media_Files> sortedMediaFiles = new ArrayList<>();
+    public static ArrayList<File> imagesFilesReceived = new ArrayList<>();
+    public static ArrayList<File> imagesFilesSent = new ArrayList<>();
+    public static ArrayList<File> videoFilesReceived = new ArrayList<>();
+    public static ArrayList<File> videoFilesSent = new ArrayList<>();
+    public static ArrayList<File> audioFilesReceived = new ArrayList<>();
+    public static ArrayList<File> audioFilesSent = new ArrayList<>();
+    public static ArrayList<File> voiceFiles = new ArrayList<>();
 
-    public ImageFiles_Fragment() {
-        // Required empty public constructor
-    }
+    public static ArrayList<Sorted_Media_Files> sortedImageMediaFiles = new ArrayList<>();
 
+    private BottomNavigationBar bottomNavigationBar;
+    private FragmentTransaction transaction;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_image_files_, container, false);
-        processData();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_navigation);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Bundle bundle = getIntent().getExtras();
+        try {
+            imagesFilesReceived = Whatyclean.imagesFilesReceived;
+            imagesFilesSent = Whatyclean.imagesFilesSent;
+            videoFilesReceived = Whatyclean.videoFilesReceived;
+            videoFilesSent = Whatyclean.videoFilesSent;
+            audioFilesReceived = Whatyclean.audioFilesReceived;
+            audioFilesSent = Whatyclean.audioFilesSent;
+            voiceFiles = Whatyclean.voiceFiles;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        processImageData();
+
+        initialiseBottomNavigationBar();
+        if (findViewById(R.id.fragment_container) != null) {
+
+            if (savedInstanceState != null) {
+                return;
+            }
+            ImageFiles_Fragment imageFiles_fragment = new ImageFiles_Fragment();
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.fragment_container, imageFiles_fragment).commit();
+        }
 
 
-        return view;
     }
 
-    private void processData() {
+    private void initialiseBottomNavigationBar() {
+        bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationBar
+                .setActiveColor(android.R.color.white)
+                .setInActiveColor(R.color.lt_grey)
+                .setBarBackgroundColor(R.color.colorPrimary);
+
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.drawable.image_icon, "Images"))
+                .addItem(new BottomNavigationItem(R.drawable.video_icon, "Videos"))
+                .addItem(new BottomNavigationItem(R.drawable.audio_icon, "Audios"))
+                .addItem(new BottomNavigationItem(R.drawable.record_icon, "Voices"))
+                .setMode(BottomNavigationBar.MODE_CLASSIC)
+                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE)
+                .initialise();
+
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position) {
+                switch (position) {
+                    case 0:
+                        ImageFiles_Fragment imageFiles_fragment = new ImageFiles_Fragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, imageFiles_fragment).commit();
+                        break;
+                    case 1:
+                        VideoFiles_Fragment videoFiles_fragment = new VideoFiles_Fragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, videoFiles_fragment).commit();
+                        break;
+                    case 2:
+                        AudioFiles_Fragment audioFiles_fragment = new AudioFiles_Fragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, audioFiles_fragment).commit();
+                        break;
+                    case 3:
+                        VoiceNotes_Fragment voiceNotes_fragment = new VoiceNotes_Fragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, voiceNotes_fragment).commit();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+
+            }
+
+            @Override
+            public void onTabReselected(int position) {
+
+            }
+        });
+    }
+
+    private void processImageData() {
+        sortedImageMediaFiles.clear();
         Sorted_Media_Files today_sorted_media_file = new Sorted_Media_Files();
 
         Calendar yesterday_calendar = Calendar.getInstance();
@@ -87,8 +176,8 @@ public class ImageFiles_Fragment extends Fragment {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         ArrayList<File> imageArray = new ArrayList<>();
-        imageArray.addAll(Navigation_Activity.imagesFilesReceived);
-        imageArray.addAll(Navigation_Activity.imagesFilesSent);
+        imageArray.addAll(imagesFilesReceived);
+        imageArray.addAll(imagesFilesSent);
         for (int i = 0; i < imageArray.size(); i++) {
             long millisec = imageArray.get(i).lastModified();
             DateTime file_date = new DateTime(simpleDateFormat.format(new Date(millisec)));
@@ -198,38 +287,40 @@ public class ImageFiles_Fragment extends Fragment {
         }
 
         if (!twenty_year_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(twenty_year_sorted_media_file);
+            sortedImageMediaFiles.add(twenty_year_sorted_media_file);
         }
         if (!ten_year_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(ten_year_sorted_media_file);
+            sortedImageMediaFiles.add(ten_year_sorted_media_file);
         }
         if (!five_year_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(five_year_sorted_media_file);
+            sortedImageMediaFiles.add(five_year_sorted_media_file);
         }
         if (!two_year_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(two_year_sorted_media_file);
+            sortedImageMediaFiles.add(two_year_sorted_media_file);
         }
         if (!year_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(year_sorted_media_file);
+            sortedImageMediaFiles.add(year_sorted_media_file);
         }
         if (!six_month_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(six_month_sorted_media_file);
+            sortedImageMediaFiles.add(six_month_sorted_media_file);
         }
         if (!month_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(month_sorted_media_file);
+            sortedImageMediaFiles.add(month_sorted_media_file);
         }
         if (!week_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(week_sorted_media_file);
+            sortedImageMediaFiles.add(week_sorted_media_file);
         }
         if (!yesterday_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(yesterday_sorted_media_file);
+            sortedImageMediaFiles.add(yesterday_sorted_media_file);
         }
         if (!today_sorted_media_file.media_files.isEmpty()) {
-            sortedMediaFiles.add(two_year_sorted_media_file);
+            sortedImageMediaFiles.add(today_sorted_media_file);
         }
 
+        if (!sortedImageMediaFiles.isEmpty()){
+            sortedImageMediaFiles.get(sortedImageMediaFiles.size()-1).isInitiallyExpanded = true;
+        }
 
     }
-
 
 }

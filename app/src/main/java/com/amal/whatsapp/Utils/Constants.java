@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Utils;
+package com.amal.whatsapp.Utils;
 
 /**
  * Created by amal on 29/04/16.

@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Pojo;
+package com.amal.whatsapp.Pojo;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package com.amal.whatsclean;
+package com.amal.whatsapp;
 
 import org.junit.Test;
 

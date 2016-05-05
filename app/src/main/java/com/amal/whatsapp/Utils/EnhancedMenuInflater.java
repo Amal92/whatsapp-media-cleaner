@@ -1,4 +1,4 @@
-package com.amal.whatsclean.Utils;
+package com.amal.whatsapp.Utils;
 
 import android.support.v4.internal.view.SupportMenuItem;
 import android.support.v7.view.menu.MenuItemImpl;
@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.amal.whatsclean.R;
+import com.amal.whatsapp.R;
 
 /**
  * Created by amal on 11/04/16.
