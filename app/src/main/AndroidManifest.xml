@@ -26,8 +26,9 @@
         <activity
             android:name="com.amal.whatsapp.Activities.Navigation_Activity"
             android:label="@string/title_activity_navigation_"
+            android:screenOrientation="portrait"
             android:parentActivityName="com.amal.whatsapp.Activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/NavigationActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amal.whatsapp.Activities.MainActivity" />

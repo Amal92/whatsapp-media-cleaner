@@ -40,15 +40,33 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/size_rounded_corner"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/header_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/green"
+                android:textStyle="bold"
+                android:text="0.00B" />
+        </LinearLayout>
+
         <CheckBox
             android:id="@+id/header_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:background="#e0e0e0"
-        />
+        android:background="#e0e0e0" />
 </LinearLayout>

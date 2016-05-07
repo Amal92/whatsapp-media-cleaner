@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#004D40</color>
     <color name="colorAccent">#FF4081</color>
     <color name="lt_grey">#FFCCCCCC</color>
+    <color name="red">#fa3030</color>
+    <color name="continue_button_red_dark">#c43c3c</color>
+    <color name="continue_button_red">#ec4a4a</color>
+    <color name="cancel_button_grey">#e7dede</color>
+    <color name="cancel_button_grey_dark">#d1d0d0</color>
+    <color name="green">#2b8c56</color>
 </resources>

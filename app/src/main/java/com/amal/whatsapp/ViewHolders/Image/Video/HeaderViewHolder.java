@@ -1,4 +1,4 @@
-package com.amal.whatsapp.ViewHolders.Image;
+package com.amal.whatsapp.ViewHolders.Image.Video;
 
 import android.view.View;
 import android.widget.CheckBox;
@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amal.whatsapp.Activities.Navigation_Activity;
-import com.amal.whatsapp.Fragments.ImageFiles_Fragment;
+import com.amal.whatsapp.Fragments.VideoFiles_Fragment;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.Pojo.Sorted_Media_Files;
 import com.amal.whatsapp.R;
@@ -40,19 +40,19 @@ public class HeaderViewHolder extends ParentViewHolder {
                 if (((CheckBox) v).isChecked()) {
 
                     int pos = getParentAdapterPosition();
-                    Navigation_Activity.sortedImageMediaFiles.get(pos).isChecked = true;
-                    for (int i = 0; i < Navigation_Activity.sortedImageMediaFiles.get(pos).media_files.size(); i++) {
-                        Navigation_Activity.sortedImageMediaFiles.get(pos).media_files.get(i).checked = true;
+                    Navigation_Activity.sortedVideoMediaFiles.get(pos).isChecked = true;
+                    for (int i = 0; i < Navigation_Activity.sortedVideoMediaFiles.get(pos).media_files.size(); i++) {
+                        Navigation_Activity.sortedVideoMediaFiles.get(pos).media_files.get(i).checked = true;
                     }
-                    ImageFiles_Fragment.adapter.notifyChildItemRangeChanged(pos, 0, Navigation_Activity.sortedImageMediaFiles.get(pos).media_files.size());
+                    VideoFiles_Fragment.adapter.notifyChildItemRangeChanged(pos, 0, Navigation_Activity.sortedVideoMediaFiles.get(pos).media_files.size());
 
                 } else {
                     int pos = getParentAdapterPosition();
-                    Navigation_Activity.sortedImageMediaFiles.get(pos).isChecked = false;
-                    for (int i = 0; i < Navigation_Activity.sortedImageMediaFiles.get(pos).media_files.size(); i++) {
-                        Navigation_Activity.sortedImageMediaFiles.get(pos).media_files.get(i).checked = false;
+                    Navigation_Activity.sortedVideoMediaFiles.get(pos).isChecked = false;
+                    for (int i = 0; i < Navigation_Activity.sortedVideoMediaFiles.get(pos).media_files.size(); i++) {
+                        Navigation_Activity.sortedVideoMediaFiles.get(pos).media_files.get(i).checked = false;
                     }
-                    ImageFiles_Fragment.adapter.notifyChildItemRangeChanged(pos, 0, Navigation_Activity.sortedImageMediaFiles.get(pos).media_files.size());
+                    VideoFiles_Fragment.adapter.notifyChildItemRangeChanged(pos, 0, Navigation_Activity.sortedVideoMediaFiles.get(pos).media_files.size());
                 }
             }
         });

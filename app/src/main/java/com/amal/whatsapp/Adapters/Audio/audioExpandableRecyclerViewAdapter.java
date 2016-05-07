@@ -1,4 +1,4 @@
-package com.amal.whatsapp.Adapters.Image;
+package com.amal.whatsapp.Adapters.Audio;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import com.amal.whatsapp.Pojo.Media_File;
 import com.amal.whatsapp.Pojo.Sorted_Media_Files;
 import com.amal.whatsapp.R;
-import com.amal.whatsapp.ViewHolders.Image.HeaderViewHolder;
-import com.amal.whatsapp.ViewHolders.Image.childViewHolder;
+import com.amal.whatsapp.ViewHolders.Image.Audio.HeaderViewHolder;
+import com.amal.whatsapp.ViewHolders.Image.Audio.childViewHolder;
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
 import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
 
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by amal on 04/05/16.
  */
-public class expandableRecyclerViewAdapter extends ExpandableRecyclerAdapter<HeaderViewHolder, childViewHolder> {
+public class audioExpandableRecyclerViewAdapter extends ExpandableRecyclerAdapter<HeaderViewHolder, childViewHolder> {
 
     private LayoutInflater mInflator;
     private Context mContext;
@@ -34,7 +34,7 @@ public class expandableRecyclerViewAdapter extends ExpandableRecyclerAdapter<Hea
      *                       displayed in the RecyclerView that this
      *                       adapter is linked to
      */
-    public expandableRecyclerViewAdapter(Context mContext, @NonNull List<? extends ParentListItem> parentItemList) {
+    public audioExpandableRecyclerViewAdapter(Context mContext, @NonNull List<? extends ParentListItem> parentItemList) {
         super(parentItemList);
         this.mContext = mContext;
         mInflator = LayoutInflater.from(mContext);

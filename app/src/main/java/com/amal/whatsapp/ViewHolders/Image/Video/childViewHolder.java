@@ -1,4 +1,4 @@
-package com.amal.whatsapp.ViewHolders.Image;
+package com.amal.whatsapp.ViewHolders.Image.Video;
 
 import android.content.Context;
 import android.view.View;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.amal.whatsapp.Activities.Navigation_Activity;
 import com.amal.whatsapp.Adapters.gridAdapter;
-import com.amal.whatsapp.Fragments.ImageFiles_Fragment;
+import com.amal.whatsapp.Fragments.VideoFiles_Fragment;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.Pojo.Media_File;
 import com.amal.whatsapp.R;
@@ -47,24 +47,24 @@ public class childViewHolder extends ChildViewHolder {
                 if (((CheckBox) v).isChecked()) {
                     int parentPos = getParentAdapterPosition();
                     int childPos = getChildAdapterPosition();
-                    Navigation_Activity.sortedImageMediaFiles.get(parentPos).media_files.get(childPos).checked = true;
+                    Navigation_Activity.sortedVideoMediaFiles.get(parentPos).media_files.get(childPos).checked = true;
                     boolean flag = false;
-                    for (int i = 0; i < Navigation_Activity.sortedImageMediaFiles.get(parentPos).media_files.size(); i++) {
-                        if (!Navigation_Activity.sortedImageMediaFiles.get(parentPos).media_files.get(i).checked) {
+                    for (int i = 0; i < Navigation_Activity.sortedVideoMediaFiles.get(parentPos).media_files.size(); i++) {
+                        if (!Navigation_Activity.sortedVideoMediaFiles.get(parentPos).media_files.get(i).checked) {
                             flag = true;
                         }
                     }
                     if (!flag) {
-                        Navigation_Activity.sortedImageMediaFiles.get(parentPos).isChecked = true;
-                        ImageFiles_Fragment.adapter.notifyParentItemChanged(parentPos);
+                        Navigation_Activity.sortedVideoMediaFiles.get(parentPos).isChecked = true;
+                        VideoFiles_Fragment.adapter.notifyParentItemChanged(parentPos);
                     }
                 } else {
                     int parentPos = getParentAdapterPosition();
                     int childPos = getChildAdapterPosition();
-                    Navigation_Activity.sortedImageMediaFiles.get(parentPos).media_files.get(childPos).checked = false;
-                    if ( Navigation_Activity.sortedImageMediaFiles.get(parentPos).isChecked) {
-                        Navigation_Activity.sortedImageMediaFiles.get(parentPos).isChecked = false;
-                        ImageFiles_Fragment.adapter.notifyParentItemChanged(parentPos);
+                    Navigation_Activity.sortedVideoMediaFiles.get(parentPos).media_files.get(childPos).checked = false;
+                    if ( Navigation_Activity.sortedVideoMediaFiles.get(parentPos).isChecked) {
+                        Navigation_Activity.sortedVideoMediaFiles.get(parentPos).isChecked = false;
+                        VideoFiles_Fragment.adapter.notifyParentItemChanged(parentPos);
                     }
                 }
             }
