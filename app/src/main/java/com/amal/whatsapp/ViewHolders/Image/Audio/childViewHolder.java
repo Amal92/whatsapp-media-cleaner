@@ -1,10 +1,12 @@
 package com.amal.whatsapp.ViewHolders.Image.Audio;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amal.whatsapp.Activities.Navigation_Activity;
@@ -21,10 +23,10 @@ import com.bumptech.glide.Glide;
  */
 public class childViewHolder extends ChildViewHolder {
 
-    TextView name, size;
-    CheckBox checkBox;
-    ImageView imageView;
-
+    private TextView name, size;
+    private CheckBox checkBox;
+    private ImageView imageView;
+    private LinearLayout mLinearLayout;
 
     /**
      * Default constructor.
@@ -34,6 +36,7 @@ public class childViewHolder extends ChildViewHolder {
     public childViewHolder(View itemView) {
         super(itemView);
         name = (TextView) itemView.findViewById(R.id.child_text_name);
+        mLinearLayout = (LinearLayout) itemView.findViewById(R.id.child_click_layout);
         size = (TextView) itemView.findViewById(R.id.child_text_size);
         imageView = (ImageView) itemView.findViewById(R.id.imageView);
         checkBox = (CheckBox) itemView.findViewById(R.id.child_checkbox);
@@ -58,7 +61,7 @@ public class childViewHolder extends ChildViewHolder {
                     int parentPos = getParentAdapterPosition();
                     int childPos = getChildAdapterPosition();
                     Navigation_Activity.sortedAudioMediaFiles.get(parentPos).media_files.get(childPos).checked = false;
-                    if ( Navigation_Activity.sortedAudioMediaFiles.get(parentPos).isChecked) {
+                    if (Navigation_Activity.sortedAudioMediaFiles.get(parentPos).isChecked) {
                         Navigation_Activity.sortedAudioMediaFiles.get(parentPos).isChecked = false;
                         AudioFiles_Fragment.adapter.notifyParentItemChanged(parentPos);
                     }
@@ -68,11 +71,19 @@ public class childViewHolder extends ChildViewHolder {
 
     }
 
-    public void bind(Context mContext, Media_File media_file) {
+    public void bind(final Context mContext, final Media_File media_file) {
         name.setText(media_file.file.getName());
         StorageSize mStorageSize = StorageUtil.convertStorageSize(media_file.file.length());
         size.setText(String.format("%.2f", mStorageSize.value) + " " + mStorageSize.suffix);
         checkBox.setChecked(media_file.checked);
         Glide.with(mContext).load(media_file.file).placeholder(R.drawable.earphones).into(imageView);
+        mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(media_file.file));
+                intent.setDataAndType(Uri.fromFile(media_file.file), "audio/*");
+                mContext.startActivity(intent);
+            }
+        });
     }
 }
