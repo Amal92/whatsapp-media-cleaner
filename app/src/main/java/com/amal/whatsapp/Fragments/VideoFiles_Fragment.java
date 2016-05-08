@@ -47,7 +47,7 @@ public class VideoFiles_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video_files, container, false);
 
         try {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Videos");
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Video Messages");
         } catch (Exception e) {
             e.printStackTrace();
         }

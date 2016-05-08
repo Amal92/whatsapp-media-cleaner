@@ -57,7 +57,7 @@ public class AudioFiles_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_audio_files, container, false);
         try {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Audios");
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Audio Messages");
         } catch (Exception e) {
             e.printStackTrace();
         }

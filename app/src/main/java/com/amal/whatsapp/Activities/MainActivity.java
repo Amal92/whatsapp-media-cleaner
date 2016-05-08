@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     scanAudio(audioFolder);
                 }
 
-                File voiceNotesFolder = new File(whatsapp_media.getPath() + "/WhatsApp Audio");
+                File voiceNotesFolder = new File(whatsapp_media.getPath() + "/WhatsApp Voice Notes");
                 if (voiceNotesFolder.exists() && voiceNotesFolder.isDirectory()) {
                     scanVoiceNotes(voiceNotesFolder);
                 }

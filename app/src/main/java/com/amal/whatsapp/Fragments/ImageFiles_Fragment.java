@@ -56,7 +56,7 @@ public class ImageFiles_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_image_files_, container, false);
         try {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Images");
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Image Messages");
         } catch (Exception e) {
             e.printStackTrace();
         }
