@@ -39,10 +39,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="8dp"
         android:text="0 MB"
         android:textColor="@android:color/white"
         android:textSize="35sp" />
+
+    <ListView
+        android:id="@+id/file_count_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/media_size"
+        android:layout_marginTop="30dp"
+        android:divider="@null"
+        android:layoutAnimation="@anim/item_slide_up"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:layout_centerHorizontal="true"
+
+         />
 
     <ProgressBar
         android:id="@+id/progress"

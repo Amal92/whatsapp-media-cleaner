@@ -1,10 +1,13 @@
 package com.amal.whatsapp.Activities;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.amal.whatsapp.Applications.Whatyclean;
 import com.amal.whatsapp.Fragments.AudioFiles_Fragment;
@@ -41,8 +44,10 @@ public class Navigation_Activity extends AppCompatActivity {
     public static ArrayList<Sorted_Media_Files> sortedAudioMediaFiles = new ArrayList<>();
     public static ArrayList<Sorted_Media_Files> sortedVoiceMediaFiles = new ArrayList<>();
 
+    //views
     private BottomNavigationBar bottomNavigationBar;
     private FragmentTransaction transaction;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,23 +69,9 @@ public class Navigation_Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_navigation);
 
-        processImageData();
-        processVideoData();
-        processAudioData();
-        processVoiceData();
-
-        initialiseBottomNavigationBar();
-        if (findViewById(R.id.fragment_container) != null) {
-
-            if (savedInstanceState != null) {
-                return;
-            }
-            ImageFiles_Fragment imageFiles_fragment = new ImageFiles_Fragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragment_container, imageFiles_fragment).commit();
-        }
-
+        new processAsyncTask().execute();
 
     }
 
@@ -898,7 +889,36 @@ public class Navigation_Activity extends AppCompatActivity {
 
     }
 
+private class processAsyncTask extends AsyncTask<Void,Void,Void>{
 
+    @Override
+    protected Void doInBackground(Void... params) {
+        processImageData();
+        processVideoData();
+        processAudioData();
+        processVoiceData();
+        return null;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        mProgressBar.setVisibility(View.GONE);
+        if (findViewById(R.id.fragment_container) != null) {
+
+            ImageFiles_Fragment imageFiles_fragment = new ImageFiles_Fragment();
+            transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.fragment_container, imageFiles_fragment).commit();
+        }
+        initialiseBottomNavigationBar();
+    }
+}
 
 
 

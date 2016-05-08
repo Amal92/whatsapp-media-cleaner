@@ -2,6 +2,7 @@ package com.amal.whatsapp.Activities;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -9,15 +10,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.amal.whatsapp.Adapters.ListAdapter;
 import com.amal.whatsapp.Applications.Whatyclean;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.R;
-import com.amal.whatsapp.Utils.Constants;
 import com.amal.whatsapp.Utils.FileNameUtils;
 import com.amal.whatsapp.Utils.StorageUtil;
 import com.splunk.mint.Mint;
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_STORAGE_PERMISSION = 0;
     private long media_size = 0;
+    private ListAdapter itemsAdapter;
+    private ArrayList<String> file_counts = new ArrayList<>();
     private ArrayList<File> imagesFilesReceived = new ArrayList<>();
     private ArrayList<File> imagesFilesSent = new ArrayList<>();
     private ArrayList<File> videoFilesReceived = new ArrayList<>();
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView total_media_size;
     private ImageButton nextButton;
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mListView = (ListView) findViewById(R.id.file_count_list);
+        itemsAdapter = new ListAdapter(this,file_counts);
+        mListView.setAdapter(itemsAdapter);
 
         progressBar = (ProgressBar) findViewById(R.id.progress);
         progressBar.setIndeterminate(true);
@@ -69,15 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 Whatyclean.audioFilesReceived = audioFilesReceived;
                 Whatyclean.audioFilesSent = audioFilesSent;
                 Whatyclean.voiceFiles = voiceFiles;
-                Intent intent = new Intent(MainActivity.this,Navigation_Activity.class);
-               /* intent.putExtra(Constants.IMAGE_FILES_RECEIVED,imagesFilesReceived);
-                intent.putExtra(Constants.IMAGE_FILES_SENT,imagesFilesSent);
-                intent.putExtra(Constants.VIDEO_FILES_RECEIVED,videoFilesReceived);
-                intent.putExtra(Constants.VIDEO_FILES_SENT,videoFilesSent);
-                intent.putExtra(Constants.AUDIO_FILES_RECEIVED,audioFilesReceived);
-                intent.putExtra(Constants.AUDIO_FILES_SENT,audioFilesSent);
-                intent.putExtra(Constants.VOICE_FILES_RECEIVED,voiceFiles);*/
-
+                Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
                 startActivity(intent);
             }
         });
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             //permission already granted
-            scanFolder();
+            new scanAsyncTask().execute();
         }
     }
 
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission is granted, yay!
-                    scanFolder();
+                    new scanAsyncTask().execute();
 
                 } else {
 
@@ -154,14 +155,6 @@ public class MainActivity extends AppCompatActivity {
                     scanVoiceNotes(voiceNotesFolder);
                 }
 
-                StorageSize mStorageSize = StorageUtil.convertStorageSize(media_size);
-                progressBar.setVisibility(View.GONE);
-                total_media_size.setVisibility(View.VISIBLE);
-                total_media_size.setText(String.format("%.2f", mStorageSize.value) + " " + mStorageSize.suffix);
-                int tot_count = imagesFilesReceived.size() + imagesFilesSent.size() +
-                        videoFilesReceived.size() + videoFilesSent.size() + audioFilesReceived.size()
-                        + audioFilesSent.size() + voiceFiles.size();
-                Toast.makeText(this, "" + tot_count, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -293,6 +286,42 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private class scanAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            scanFolder();
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            total_media_size.setVisibility(View.GONE);
+            nextButton.setEnabled(false);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            StorageSize mStorageSize = StorageUtil.convertStorageSize(media_size);
+            progressBar.setVisibility(View.GONE);
+            total_media_size.setVisibility(View.VISIBLE);
+            total_media_size.setText(String.format("%.2f", mStorageSize.value) + " " + mStorageSize.suffix);
+            file_counts.add("" + (imagesFilesReceived.size() + imagesFilesSent.size()));
+            file_counts.add("" + (videoFilesReceived.size() + videoFilesSent.size()));
+            file_counts.add("" + (audioFilesReceived.size() + audioFilesSent.size()));
+            file_counts.add("" + voiceFiles.size());
+            itemsAdapter.notifyDataSetChanged();
+            nextButton.setEnabled(true);
+          /*  int tot_count = imagesFilesReceived.size() + imagesFilesSent.size() +
+                    videoFilesReceived.size() + videoFilesSent.size() + audioFilesReceived.size()
+                    + audioFilesSent.size() + voiceFiles.size();
+            Toast.makeText(MainActivity.this, "" + tot_count, Toast.LENGTH_SHORT).show();*/
+        }
     }
 
 }

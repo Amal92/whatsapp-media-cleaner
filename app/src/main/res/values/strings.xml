@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WhatsClean</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_navigation_">Navigation_Activity</string>
+    <string name="title_activity_navigation_">Whatsapp Media Files</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
