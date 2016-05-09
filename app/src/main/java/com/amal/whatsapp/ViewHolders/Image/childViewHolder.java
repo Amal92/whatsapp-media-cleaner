@@ -1,6 +1,8 @@
 package com.amal.whatsapp.ViewHolders.Image;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -79,10 +81,10 @@ public class childViewHolder extends ChildViewHolder {
         mLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent();
+                Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(media_file.file), "image*//*");
-                mContext.startActivity(intent);*/
+                intent.setDataAndType(Uri.fromFile(media_file.file), "image/*");
+                mContext.startActivity(intent);
 
             }
         });

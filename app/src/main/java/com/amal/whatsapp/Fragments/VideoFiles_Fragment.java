@@ -2,7 +2,6 @@ package com.amal.whatsapp.Fragments;
 
 
 import android.os.Bundle;
-
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amal.whatsapp.Activities.Navigation_Activity;
-import com.amal.whatsapp.Adapters.Image.expandableRecyclerViewAdapter;
 import com.amal.whatsapp.Adapters.Video.VideoExpandableRecyclerViewAdapter;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.R;
@@ -47,7 +45,7 @@ public class VideoFiles_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video_files, container, false);
 
         try {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Video Messages");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Video Messages");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,28 +59,31 @@ public class VideoFiles_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_layout, null);
-                mBuilder.setView(dialogView);
-                Button cancel_button = (Button) dialogView.findViewById(R.id.cancel_button);
-                Button continue_button = (Button) dialogView.findViewById(R.id.continue_button);
-                final AlertDialog mAlertDialog = mBuilder.create();
-                mAlertDialog.show();
-                cancel_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mAlertDialog.dismiss();
-                    }
-                });
-                continue_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteVideoFiles();
-                        mAlertDialog.dismiss();
-                    }
-                });
-
+                if (checkForFileToDelete()) {
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_layout, null);
+                    mBuilder.setView(dialogView);
+                    Button cancel_button = (Button) dialogView.findViewById(R.id.cancel_button);
+                    Button continue_button = (Button) dialogView.findViewById(R.id.continue_button);
+                    final AlertDialog mAlertDialog = mBuilder.create();
+                    mAlertDialog.show();
+                    cancel_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAlertDialog.dismiss();
+                        }
+                    });
+                    continue_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteVideoFiles();
+                            mAlertDialog.dismiss();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getActivity(), "Select a file to delete", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -92,12 +93,22 @@ public class VideoFiles_Fragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        eraseChecks();
+        //  eraseChecks();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    private boolean checkForFileToDelete() {
+        for (int i = 0; i < Navigation_Activity.sortedVideoMediaFiles.size(); i++) {
+            for (int j = 0; j < Navigation_Activity.sortedVideoMediaFiles.get(i).media_files.size(); j++) {
+                if (Navigation_Activity.sortedVideoMediaFiles.get(i).media_files.get(j).checked)
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void deleteVideoFiles() {

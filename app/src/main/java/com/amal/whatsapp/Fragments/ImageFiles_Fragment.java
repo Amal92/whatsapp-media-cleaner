@@ -42,7 +42,7 @@ public class ImageFiles_Fragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        eraseChecks();
+        // eraseChecks();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ImageFiles_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_image_files_, container, false);
         try {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Image Messages");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Image Messages");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,32 +70,46 @@ public class ImageFiles_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_layout, null);
-                mBuilder.setView(dialogView);
-                Button cancel_button = (Button) dialogView.findViewById(R.id.cancel_button);
-                Button continue_button = (Button) dialogView.findViewById(R.id.continue_button);
-                final AlertDialog mAlertDialog = mBuilder.create();
-                mAlertDialog.show();
-                cancel_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mAlertDialog.dismiss();
-                    }
-                });
-                continue_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteImageFiles();
-                        mAlertDialog.dismiss();
-                    }
-                });
+                if (checkForFileToDelete()) {
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_layout, null);
+                    mBuilder.setView(dialogView);
+                    Button cancel_button = (Button) dialogView.findViewById(R.id.cancel_button);
+                    Button continue_button = (Button) dialogView.findViewById(R.id.continue_button);
+                    final AlertDialog mAlertDialog = mBuilder.create();
+                    mAlertDialog.show();
+                    cancel_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAlertDialog.dismiss();
+                        }
+                    });
+                    continue_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteImageFiles();
+                            mAlertDialog.dismiss();
+                        }
+                    });
 
+                }else {
+                    Toast.makeText(getActivity(),"Select a file to delete",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return view;
+    }
+
+    private boolean checkForFileToDelete() {
+        for (int i = 0; i < Navigation_Activity.sortedImageMediaFiles.size(); i++) {
+            for (int j = 0; j < Navigation_Activity.sortedImageMediaFiles.get(i).media_files.size(); j++) {
+                if (Navigation_Activity.sortedImageMediaFiles.get(i).media_files.get(j).checked)
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void deleteImageFiles() {
@@ -104,9 +118,18 @@ public class ImageFiles_Fragment extends Fragment {
         for (int i = 0; i < Navigation_Activity.sortedImageMediaFiles.size(); i++) {
             for (int j = 0; j < Navigation_Activity.sortedImageMediaFiles.get(i).media_files.size(); j++) {
                 if (Navigation_Activity.sortedImageMediaFiles.get(i).media_files.get(j).checked) {
-                    File file = Navigation_Activity.sortedImageMediaFiles.get(i).media_files.get(j).file;
-                    long size = file.length();
-                    if (file.delete()) {
+                    if (Navigation_Activity.sortedImageMediaFiles.get(i).media_files.get(j).file.exists()) {
+                        File file = Navigation_Activity.sortedImageMediaFiles.get(i).media_files.get(j).file;
+                        long size = file.length();
+                        if (file.delete()) {
+                            Navigation_Activity.sortedImageMediaFiles.get(i).size = Navigation_Activity.sortedImageMediaFiles.get(i).size - size;
+                            totalFileSize = totalFileSize + size;
+                            count++;
+                            Navigation_Activity.sortedImageMediaFiles.get(i).media_files.remove(j);
+                            adapter.notifyChildItemRemoved(i, j);
+                        }
+                    } else {
+                        long size = Navigation_Activity.sortedImageMediaFiles.get(i).media_files.get(j).size;
                         Navigation_Activity.sortedImageMediaFiles.get(i).size = Navigation_Activity.sortedImageMediaFiles.get(i).size - size;
                         totalFileSize = totalFileSize + size;
                         count++;

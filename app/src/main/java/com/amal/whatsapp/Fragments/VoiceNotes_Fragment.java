@@ -40,7 +40,7 @@ public class VoiceNotes_Fragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        eraseChecks();
+        //  eraseChecks();
     }
 
     @Override
@@ -69,32 +69,45 @@ public class VoiceNotes_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.dialog_layout, null);
-                mBuilder.setView(dialogView);
-                Button cancel_button = (Button) dialogView.findViewById(R.id.cancel_button);
-                Button continue_button = (Button) dialogView.findViewById(R.id.continue_button);
-                final AlertDialog mAlertDialog = mBuilder.create();
-                mAlertDialog.show();
-                cancel_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mAlertDialog.dismiss();
-                    }
-                });
-                continue_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteVoiceFiles();
-                        mAlertDialog.dismiss();
-                    }
-                });
-
+                if (checkForFileToDelete()) {
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_layout, null);
+                    mBuilder.setView(dialogView);
+                    Button cancel_button = (Button) dialogView.findViewById(R.id.cancel_button);
+                    Button continue_button = (Button) dialogView.findViewById(R.id.continue_button);
+                    final AlertDialog mAlertDialog = mBuilder.create();
+                    mAlertDialog.show();
+                    cancel_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAlertDialog.dismiss();
+                        }
+                    });
+                    continue_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteVoiceFiles();
+                            mAlertDialog.dismiss();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getActivity(), "Select a file to delete", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return view;
+    }
+
+    private boolean checkForFileToDelete() {
+        for (int i = 0; i < Navigation_Activity.sortedVoiceMediaFiles.size(); i++) {
+            for (int j = 0; j < Navigation_Activity.sortedVoiceMediaFiles.get(i).media_files.size(); j++) {
+                if (Navigation_Activity.sortedVoiceMediaFiles.get(i).media_files.get(j).checked)
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void deleteVoiceFiles() {
