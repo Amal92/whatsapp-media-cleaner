@@ -1,45 +1,37 @@
-package com.amal.whatsapp.Activities;
+package com.amal.whatsapp.Services;
 
-import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.text.format.DateUtils;
+import android.widget.RemoteViews;
 
-import com.amal.whatsapp.Adapters.ListAdapter;
-import com.amal.whatsapp.Applications.Whatyclean;
+import com.amal.whatsapp.Activities.MainActivity;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.R;
-import com.amal.whatsapp.Services.AlarmReceiverService;
-import com.amal.whatsapp.Utils.Constants;
 import com.amal.whatsapp.Utils.FileNameUtils;
 import com.amal.whatsapp.Utils.StorageUtil;
-import com.amal.whatsapp.receivers.SetAlarmBroadcastReciever;
-import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * Created by amal on 09/05/16.
+ */
+public class AlarmReceiverService extends Service {
 
-    private static final int REQUEST_STORAGE_PERMISSION = 0;
-    private long media_size = 0;
-    private ListAdapter itemsAdapter;
-    private ArrayList<String> file_counts = new ArrayList<>();
     private ArrayList<File> imagesFilesReceived = new ArrayList<>();
     private ArrayList<File> imagesFilesSent = new ArrayList<>();
     private ArrayList<File> videoFilesReceived = new ArrayList<>();
@@ -47,104 +39,19 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<File> audioFilesReceived = new ArrayList<>();
     private ArrayList<File> audioFilesSent = new ArrayList<>();
     private ArrayList<File> voiceFiles = new ArrayList<>();
+    private long media_size = 0;
+    private long today_media_size = 0;
+    private int today_count = 0;
 
-    //Views
-    private ProgressBar progressBar;
-    private TextView total_media_size;
-    private ImageButton nextButton;
-    private ListView mListView;
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Mint.initAndStartSession(MainActivity.this, "7b5724a6");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        try {
-            getSupportActionBar().hide();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-       /* mListView = (ListView) findViewById(R.id.file_count_list);
-        itemsAdapter = new ListAdapter(this,file_counts);
-        mListView.setAdapter(itemsAdapter);*/
-
-        progressBar = (ProgressBar) findViewById(R.id.progress);
-
-        progressBar.setIndeterminate(true);
-        total_media_size = (TextView) findViewById(R.id.media_size);
-        nextButton = (ImageButton) findViewById(R.id.next_button);
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Whatyclean.imagesFilesReceived = imagesFilesReceived;
-                Whatyclean.imagesFilesSent = imagesFilesSent;
-                Whatyclean.videoFilesReceived = videoFilesReceived;
-                Whatyclean.videoFilesSent = videoFilesSent;
-                Whatyclean.audioFilesReceived = audioFilesReceived;
-                Whatyclean.audioFilesSent = audioFilesSent;
-                Whatyclean.voiceFiles = voiceFiles;
-                Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
-                startActivity(intent);
-            }
-        });
-        Intent alarmReceiver = new Intent(this, SetAlarmBroadcastReciever.class);
-        sendBroadcast(alarmReceiver);
-        Calendar calendar = Calendar.getInstance();
-
-       /* Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiverService.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), Constants.DAILY_ALARM_REQUEST_CODE, alarmIntent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 5000, pendingIntent);*/
-
-        RequestPermissions();
-
-    }
-
-    private void RequestPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                "android.permission.READ_EXTERNAL_STORAGE")
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(
-                        new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"},
-                        REQUEST_STORAGE_PERMISSION);
-            }
-
-        } else {
-            //permission already granted
-            new scanAsyncTask().execute();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_STORAGE_PERMISSION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission is granted, yay!
-                    new scanAsyncTask().execute();
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private void scanFolder() {
+
+        init();
 
         File whatsapp_root = new File(Environment.getExternalStorageDirectory() + "/WhatsApp");
         if (whatsapp_root.exists() && whatsapp_root.isDirectory()) {
@@ -173,6 +80,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private void init() {
+        today_count=0;
+        today_media_size=0;
+        media_size=0;
+        imagesFilesSent.clear();
+        imagesFilesReceived.clear();
+        videoFilesSent.clear();
+        videoFilesReceived.clear();
+        audioFilesSent.clear();
+        audioFilesReceived.clear();
+        voiceFiles.clear();
     }
 
     private void scanImages(File folder) {
@@ -304,7 +224,97 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class scanAsyncTask extends AsyncTask<Void, Void, Void> {
+    private void todayCountSize() {
+        for (int i = 0; i < imagesFilesReceived.size(); i++) {
+            if (DateUtils.isToday(imagesFilesReceived.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + imagesFilesReceived.get(i).length();
+            }
+        }
+        for (int i = 0; i < imagesFilesSent.size(); i++) {
+            if (DateUtils.isToday(imagesFilesSent.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + imagesFilesSent.get(i).length();
+            }
+        }
+        for (int i = 0; i < videoFilesReceived.size(); i++) {
+            if (DateUtils.isToday(videoFilesReceived.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + videoFilesReceived.get(i).length();
+            }
+        }
+        for (int i = 0; i < videoFilesSent.size(); i++) {
+            if (DateUtils.isToday(videoFilesSent.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + videoFilesSent.get(i).length();
+            }
+        }
+        for (int i = 0; i < audioFilesReceived.size(); i++) {
+            if (DateUtils.isToday(audioFilesReceived.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + audioFilesReceived.get(i).length();
+            }
+        }
+        for (int i = 0; i < audioFilesSent.size(); i++) {
+            if (DateUtils.isToday(audioFilesSent.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + audioFilesSent.get(i).length();
+            }
+        }
+        for (int i = 0; i < voiceFiles.size(); i++) {
+            if (DateUtils.isToday(voiceFiles.get(i).lastModified())) {
+                today_count++;
+                today_media_size = today_media_size + voiceFiles.get(i).length();
+            }
+        }
+
+        if (today_count != 0) {
+            generateNotification();
+        }
+    }
+
+    private void generateNotification() {
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),
+                R.layout.custom_notification_layout);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                // Set Icon
+                .setSmallIcon(getNotificationIcon())
+                // Set Ticker Message
+                // Dismiss Notification
+                .setAutoCancel(true)
+                // Set PendingIntent into Notification
+//                .setContentIntent(notificationIntent)
+                // Set RemoteViews into Notification
+                .setContent(remoteViews)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setColor(Color.parseColor("#ffffff"));
+
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+        taskStackBuilder.addParentStack(MainActivity.class);
+        taskStackBuilder.addNextIntent(notificationIntent);
+        PendingIntent contentIntent = taskStackBuilder.getPendingIntent(987654, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+
+        // Locate and set the Image into customnotificationtext.xml ImageViews
+        remoteViews.setImageViewResource(R.id.iv_custom, R.drawable.ic_notification);
+        StorageSize mStorageSize = StorageUtil.convertStorageSize(today_media_size);
+        remoteViews.setTextViewText(R.id.text_msg, "Whatsapp has downloaded " + today_count + " files consuming " + String.format("%.2f", mStorageSize.value) + mStorageSize.suffix+ " today");
+        mNotificationManager.notify(1, builder.build());
+    }
+
+    private int getNotificationIcon() {
+        boolean marshmallow = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+        return marshmallow ? R.drawable.ic_notification : R.drawable.ic_notification;
+    }
+
+    private class scanFolderAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -315,29 +325,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            total_media_size.setVisibility(View.GONE);
-            nextButton.setEnabled(false);
+            if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                    "android.permission.READ_EXTERNAL_STORAGE")
+                    != PackageManager.PERMISSION_GRANTED) {
+                this.cancel(true);
+            }
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            StorageSize mStorageSize = StorageUtil.convertStorageSize(media_size);
-            progressBar.setVisibility(View.GONE);
-            total_media_size.setVisibility(View.VISIBLE);
-            total_media_size.setText(String.format("%.2f", mStorageSize.value) + " " + mStorageSize.suffix);
-           /* file_counts.add("" + (imagesFilesReceived.size() + imagesFilesSent.size()));
-            file_counts.add("" + (videoFilesReceived.size() + videoFilesSent.size()));
-            file_counts.add("" + (audioFilesReceived.size() + audioFilesSent.size()));
-            file_counts.add("" + voiceFiles.size());
-            itemsAdapter.notifyDataSetChanged();*/
-            nextButton.setEnabled(true);
-          /*  int tot_count = imagesFilesReceived.size() + imagesFilesSent.size() +
-                    videoFilesReceived.size() + videoFilesSent.size() + audioFilesReceived.size()
-                    + audioFilesSent.size() + voiceFiles.size();
-            Toast.makeText(MainActivity.this, "" + tot_count, Toast.LENGTH_SHORT).show();*/
+            todayCountSize();
         }
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        new scanFolderAsyncTask().execute();
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 }

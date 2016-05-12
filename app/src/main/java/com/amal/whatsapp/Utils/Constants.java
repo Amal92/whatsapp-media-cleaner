@@ -13,4 +13,6 @@ public class Constants {
     public static final String AUDIO_FILES_RECEIVED= "audio_files_received";
     public static final String AUDIO_FILES_SENT= "audio_files_sent";
     public static final String VOICE_FILES_RECEIVED= "voice_files_received";
+
+    public static final int DAILY_ALARM_REQUEST_CODE = 1;
 }

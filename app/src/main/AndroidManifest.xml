@@ -26,13 +26,23 @@
         <activity
             android:name="com.amal.whatsapp.Activities.Navigation_Activity"
             android:label="@string/title_activity_navigation_"
-            android:screenOrientation="portrait"
             android:parentActivityName="com.amal.whatsapp.Activities.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NavigationActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amal.whatsapp.Activities.MainActivity" />
         </activity>
+
+        <service android:name=".Services.AlarmReceiverService" />
+        <receiver
+            android:name=".receivers.SetAlarmBroadcastReciever"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
