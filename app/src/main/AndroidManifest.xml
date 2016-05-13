@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.amal.whatsapp">
+    package="com.amal.whatsyclean">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".Applications.Whatyclean"
+        android:name="com.amal.whatsyclean.Applications.Whatyclean"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.amal.whatsapp.Activities.MainActivity"
+            android:name="com.amal.whatsyclean.Activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -24,19 +24,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.amal.whatsapp.Activities.Navigation_Activity"
+            android:name="com.amal.whatsyclean.Activities.Navigation_Activity"
             android:label="@string/title_activity_navigation_"
-            android:parentActivityName="com.amal.whatsapp.Activities.MainActivity"
+            android:parentActivityName="com.amal.whatsyclean.Activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NavigationActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.amal.whatsapp.Activities.MainActivity" />
+                android:value="com.amal.whatsyclean.Activities.MainActivity" />
         </activity>
 
-        <service android:name=".Services.AlarmReceiverService" />
+        <service android:name="com.amal.whatsyclean.Services.AlarmReceiverService" />
         <receiver
-            android:name=".receivers.SetAlarmBroadcastReciever"
+            android:name="com.amal.whatsyclean.receivers.SetAlarmBroadcastReciever"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
