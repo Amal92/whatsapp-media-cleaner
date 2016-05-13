@@ -44,6 +44,18 @@
         android:textColor="@android:color/white"
         android:textSize="40sp" />
 
+    <TextView
+        android:id="@+id/no_data_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/media_size"
+        android:text="Sorry, No Whatsapp data found in your device."
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        />
+
     <ListView
         android:id="@+id/file_count_list"
         android:layout_width="wrap_content"
@@ -74,4 +86,14 @@
         android:layout_marginBottom="10dp"
         android:alpha="0.8"
         android:background="@drawable/right_arrow" />
+
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/settings"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

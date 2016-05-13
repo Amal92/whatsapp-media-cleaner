@@ -22,6 +22,7 @@ import com.amal.whatsapp.Activities.MainActivity;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.R;
 import com.amal.whatsapp.Utils.FileNameUtils;
+import com.amal.whatsapp.Utils.SharedPreferencesManager;
 import com.amal.whatsapp.Utils.StorageUtil;
 
 import java.io.File;
@@ -83,9 +84,9 @@ public class AlarmReceiverService extends Service {
     }
 
     private void init() {
-        today_count=0;
-        today_media_size=0;
-        media_size=0;
+        today_count = 0;
+        today_media_size = 0;
+        media_size = 0;
         imagesFilesSent.clear();
         imagesFilesReceived.clear();
         videoFilesSent.clear();
@@ -305,13 +306,26 @@ public class AlarmReceiverService extends Service {
         // Locate and set the Image into customnotificationtext.xml ImageViews
         remoteViews.setImageViewResource(R.id.iv_custom, R.drawable.ic_notification);
         StorageSize mStorageSize = StorageUtil.convertStorageSize(today_media_size);
-        remoteViews.setTextViewText(R.id.text_msg, "Whatsapp has downloaded " + today_count + " files consuming " + String.format("%.2f", mStorageSize.value) + mStorageSize.suffix+ " today");
+        remoteViews.setTextViewText(R.id.text_msg, "Whatsapp has downloaded " + today_count + " files consuming " + String.format("%.2f", mStorageSize.value) + mStorageSize.suffix + " today");
         mNotificationManager.notify(1, builder.build());
     }
 
     private int getNotificationIcon() {
         boolean marshmallow = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
         return marshmallow ? R.drawable.ic_notification : R.drawable.ic_notification;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        if (SharedPreferencesManager.getBooleanPreference(SharedPreferencesManager.NOTIFICATION_PREFERENCE, true))
+            new scanFolderAsyncTask().execute();
+        return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     private class scanFolderAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -337,17 +351,5 @@ public class AlarmReceiverService extends Service {
             super.onPostExecute(aVoid);
             todayCountSize();
         }
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        new scanFolderAsyncTask().execute();
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
     }
 }

@@ -1,11 +1,14 @@
 package com.amal.whatsapp.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -30,6 +33,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Navigation_Activity extends AppCompatActivity {
+
+    private boolean isResumed = false;
 
     public static ArrayList<File> imagesFilesReceived = new ArrayList<>();
     public static ArrayList<File> imagesFilesSent = new ArrayList<>();
@@ -910,17 +915,57 @@ private class processAsyncTask extends AsyncTask<Void,Void,Void>{
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         mProgressBar.setVisibility(View.GONE);
-        if (findViewById(R.id.fragment_container) != null) {
+        if (isResumed) {
+            if (findViewById(R.id.fragment_container) != null) {
 
-            ImageFiles_Fragment imageFiles_fragment = new ImageFiles_Fragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragment_container, imageFiles_fragment).commit();
+                ImageFiles_Fragment imageFiles_fragment = new ImageFiles_Fragment();
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.fragment_container, imageFiles_fragment).commit();
+            }
         }
         initialiseBottomNavigationBar();
     }
 }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        isResumed=true;
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isResumed=false;
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isResumed = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this,MainActivity.class));
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // do something useful
+                onBackPressed();
+                return(true);
+        }
+
+        return(super.onOptionsItemSelected(item));
+    }
 }

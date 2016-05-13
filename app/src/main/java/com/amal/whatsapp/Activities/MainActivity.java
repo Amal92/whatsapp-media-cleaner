@@ -1,8 +1,5 @@
 package com.amal.whatsapp.Activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -13,7 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -23,21 +20,22 @@ import com.amal.whatsapp.Adapters.ListAdapter;
 import com.amal.whatsapp.Applications.Whatyclean;
 import com.amal.whatsapp.Models.StorageSize;
 import com.amal.whatsapp.R;
-import com.amal.whatsapp.Services.AlarmReceiverService;
-import com.amal.whatsapp.Utils.Constants;
 import com.amal.whatsapp.Utils.FileNameUtils;
+import com.amal.whatsapp.Utils.SharedPreferencesManager;
 import com.amal.whatsapp.Utils.StorageUtil;
 import com.amal.whatsapp.receivers.SetAlarmBroadcastReciever;
+import com.rey.material.app.BottomSheetDialog;
+import com.rey.material.widget.Switch;
 import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_STORAGE_PERMISSION = 0;
     private long media_size = 0;
+    private boolean ifPresent = false;
     private ListAdapter itemsAdapter;
     private ArrayList<String> file_counts = new ArrayList<>();
     private ArrayList<File> imagesFilesReceived = new ArrayList<>();
@@ -50,9 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
     //Views
     private ProgressBar progressBar;
-    private TextView total_media_size;
+    private TextView total_media_size, no_data;
     private ImageButton nextButton;
     private ListView mListView;
+    private ImageButton settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         mListView.setAdapter(itemsAdapter);*/
 
         progressBar = (ProgressBar) findViewById(R.id.progress);
-
         progressBar.setIndeterminate(true);
         total_media_size = (TextView) findViewById(R.id.media_size);
         nextButton = (ImageButton) findViewById(R.id.next_button);
@@ -88,18 +86,44 @@ public class MainActivity extends AppCompatActivity {
                 Whatyclean.voiceFiles = voiceFiles;
                 Intent intent = new Intent(MainActivity.this, Navigation_Activity.class);
                 startActivity(intent);
+                finish();
             }
         });
+        settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomDialog();
+            }
+        });
+        no_data = (TextView) findViewById(R.id.no_data_text);
+
         Intent alarmReceiver = new Intent(this, SetAlarmBroadcastReciever.class);
         sendBroadcast(alarmReceiver);
-        Calendar calendar = Calendar.getInstance();
-
-       /* Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiverService.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), Constants.DAILY_ALARM_REQUEST_CODE, alarmIntent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 5000, pendingIntent);*/
 
         RequestPermissions();
+
+    }
+
+    private void showBottomDialog() {
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_layout, null);
+        BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(this);
+        mBottomSheetDialog.contentView(view)
+                .heightParam(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .cancelable(true);
+        Switch mSwitch = (Switch) view.findViewById(R.id.notification_switch);
+        mSwitch.setChecked(SharedPreferencesManager.getBooleanPreference(SharedPreferencesManager.NOTIFICATION_PREFERENCE, true));
+        mSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(Switch view, boolean checked) {
+                if (checked) {
+                    SharedPreferencesManager.setBooleanPreference(SharedPreferencesManager.NOTIFICATION_PREFERENCE, true);
+                } else {
+                    SharedPreferencesManager.setBooleanPreference(SharedPreferencesManager.NOTIFICATION_PREFERENCE, false);
+                }
+            }
+        });
+        mBottomSheetDialog.show();
 
     }
 
@@ -153,21 +177,25 @@ public class MainActivity extends AppCompatActivity {
 
                 File imageFolder = new File(whatsapp_media.getPath() + "/WhatsApp Images");
                 if (imageFolder.exists() && imageFolder.isDirectory()) {
+                    ifPresent = true;
                     scanImages(imageFolder);
                 }
 
                 File videoFolder = new File(whatsapp_media.getPath() + "/WhatsApp Video");
                 if (videoFolder.exists() && videoFolder.isDirectory()) {
+                    ifPresent = true;
                     scanVideos(videoFolder);
                 }
 
                 File audioFolder = new File(whatsapp_media.getPath() + "/WhatsApp Audio");
                 if (audioFolder.exists() && audioFolder.isDirectory()) {
+                    ifPresent = true;
                     scanAudio(audioFolder);
                 }
 
                 File voiceNotesFolder = new File(whatsapp_media.getPath() + "/WhatsApp Voice Notes");
                 if (voiceNotesFolder.exists() && voiceNotesFolder.isDirectory()) {
+                    ifPresent = true;
                     scanVoiceNotes(voiceNotesFolder);
                 }
 
@@ -323,16 +351,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            StorageSize mStorageSize = StorageUtil.convertStorageSize(media_size);
             progressBar.setVisibility(View.GONE);
             total_media_size.setVisibility(View.VISIBLE);
-            total_media_size.setText(String.format("%.2f", mStorageSize.value) + " " + mStorageSize.suffix);
+            if (ifPresent) {
+                no_data.setVisibility(View.GONE);
+                nextButton.setEnabled(true);
+                StorageSize mStorageSize = StorageUtil.convertStorageSize(media_size);
+                total_media_size.setText(String.format("%.2f", mStorageSize.value) + " " + mStorageSize.suffix);
+            } else {
+                total_media_size.setText("---");
+                no_data.setVisibility(View.VISIBLE);
+            }
            /* file_counts.add("" + (imagesFilesReceived.size() + imagesFilesSent.size()));
             file_counts.add("" + (videoFilesReceived.size() + videoFilesSent.size()));
             file_counts.add("" + (audioFilesReceived.size() + audioFilesSent.size()));
             file_counts.add("" + voiceFiles.size());
             itemsAdapter.notifyDataSetChanged();*/
-            nextButton.setEnabled(true);
+
           /*  int tot_count = imagesFilesReceived.size() + imagesFilesSent.size() +
                     videoFilesReceived.size() + videoFilesSent.size() + audioFilesReceived.size()
                     + audioFilesSent.size() + voiceFiles.size();
@@ -340,4 +375,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
