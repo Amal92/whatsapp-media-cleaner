@@ -32,6 +32,7 @@ public class VideoFiles_Fragment extends Fragment {
     RecyclerView mRecyclerView;
     LinearLayoutManager mLayoutManager;
     FloatingActionButton mFloatingActionButton;
+    private TextView no_video_text;
 
     public VideoFiles_Fragment() {
         // Required empty public constructor
@@ -49,6 +50,7 @@ public class VideoFiles_Fragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        no_video_text = (TextView) view.findViewById(R.id.no_video_text);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.VideoRecyclerView);
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.videoDeleteButton);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -86,8 +88,15 @@ public class VideoFiles_Fragment extends Fragment {
                 }
             }
         });
-
+        checkEmptyList();
         return view;
+    }
+
+    private void checkEmptyList() {
+        if (Navigation_Activity.sortedImageMediaFiles.isEmpty()) {
+            mFloatingActionButton.setVisibility(View.GONE);
+            no_video_text.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -140,6 +149,7 @@ public class VideoFiles_Fragment extends Fragment {
             }
         }
         showCustomToast(totalFileSize, count);
+        checkEmptyList();
     }
 
     private void showCustomToast(long totalSize, int count) {

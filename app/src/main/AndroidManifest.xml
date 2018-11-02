@@ -35,6 +35,7 @@
         </activity>
 
         <service android:name="com.amal.whatsyclean.Services.AlarmReceiverService" />
+
         <receiver
             android:name="com.amal.whatsyclean.receivers.SetAlarmBroadcastReciever"
             android:enabled="true">
@@ -42,6 +43,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receivers.ReceiverService" />
 
     </application>
 

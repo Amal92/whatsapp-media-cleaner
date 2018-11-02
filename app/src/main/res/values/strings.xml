@@ -6,4 +6,8 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="notification_disable_text">Do you want to disable your notifications?</string>
+    <string name="no_images">No Whatsapp image messages in your device</string>
+    <string name="no_videos">No Whatsapp video messages in your device</string>
+    <string name="no_audios">No Whatsapp audio messages in your device</string>
+    <string name="no_voices">No Whatsapp voice messages in your device</string>
 </resources>

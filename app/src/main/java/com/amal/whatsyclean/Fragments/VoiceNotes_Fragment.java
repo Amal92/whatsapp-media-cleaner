@@ -32,6 +32,8 @@ public class VoiceNotes_Fragment extends Fragment {
     RecyclerView mRecyclerView;
     LinearLayoutManager mLayoutManager;
     FloatingActionButton mFloatingActionButton;
+    private TextView no_voice_text;
+
 
     public VoiceNotes_Fragment() {
         // Required empty public constructor
@@ -59,6 +61,7 @@ public class VoiceNotes_Fragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        no_voice_text = (TextView) view.findViewById(R.id.no_voice_text);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.voiceRecyclerView);
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.voiceDeleteButton);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -96,8 +99,16 @@ public class VoiceNotes_Fragment extends Fragment {
                 }
             }
         });
+        checkEmptyList();
 
         return view;
+    }
+
+    private void checkEmptyList(){
+        if (Navigation_Activity.sortedImageMediaFiles.isEmpty()){
+            mFloatingActionButton.setVisibility(View.GONE);
+            no_voice_text.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean checkForFileToDelete() {
@@ -139,6 +150,7 @@ public class VoiceNotes_Fragment extends Fragment {
             }
         }
         showCustomToast(totalFileSize, count);
+        checkEmptyList();
     }
 
     private void showCustomToast(long totalSize, int count) {

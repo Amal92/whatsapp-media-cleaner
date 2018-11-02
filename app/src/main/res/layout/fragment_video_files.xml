@@ -27,4 +27,15 @@
         android:layout_marginRight="40dp"
         android:src="@drawable/trashcan" />
 
+    <TextView
+        android:id="@+id/no_video_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_videos"
+        android:textColor="@color/colorPrimaryDark"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
 </RelativeLayout>

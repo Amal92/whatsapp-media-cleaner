@@ -32,7 +32,7 @@ public class ImageFiles_Fragment extends Fragment {
     RecyclerView mRecyclerView;
     LinearLayoutManager mLayoutManager;
     FloatingActionButton mFloatingActionButton;
-
+    private TextView no_image_text;
 
     public ImageFiles_Fragment() {
         // Required empty public constructor
@@ -60,6 +60,7 @@ public class ImageFiles_Fragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        no_image_text = (TextView) view.findViewById(R.id.no_image_text);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.imageDeleteButton);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -98,8 +99,15 @@ public class ImageFiles_Fragment extends Fragment {
                 }
             }
         });
-
+        checkEmptyList();
         return view;
+    }
+
+    private void checkEmptyList(){
+        if (Navigation_Activity.sortedImageMediaFiles.isEmpty()){
+            mFloatingActionButton.setVisibility(View.GONE);
+            no_image_text.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean checkForFileToDelete() {
@@ -150,6 +158,7 @@ public class ImageFiles_Fragment extends Fragment {
             }
         }
         showCustomToast(totalFileSize, count);
+        checkEmptyList();
     }
 
 

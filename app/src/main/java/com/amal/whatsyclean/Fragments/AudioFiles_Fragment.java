@@ -32,6 +32,7 @@ public class AudioFiles_Fragment extends Fragment {
     RecyclerView mRecyclerView;
     LinearLayoutManager mLayoutManager;
     FloatingActionButton mFloatingActionButton;
+    private TextView no_audio_text;
 
     public AudioFiles_Fragment() {
         // Required empty public constructor
@@ -59,6 +60,7 @@ public class AudioFiles_Fragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        no_audio_text = (TextView) view.findViewById(R.id.no_audio_text);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.audioRecyclerView);
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.audioDeleteButton);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -96,7 +98,15 @@ public class AudioFiles_Fragment extends Fragment {
                 }
             }
         });
+        checkEmptyList();
         return view;
+    }
+
+    private void checkEmptyList(){
+        if (Navigation_Activity.sortedImageMediaFiles.isEmpty()){
+            mFloatingActionButton.setVisibility(View.GONE);
+            no_audio_text.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean checkForFileToDelete() {
@@ -138,6 +148,7 @@ public class AudioFiles_Fragment extends Fragment {
             }
         }
         showCustomToast(totalFileSize, count);
+        checkEmptyList();
     }
 
     private void showCustomToast(long totalSize, int count) {
